@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Sean Abot",
+        "subject": "Maths",
+        "marks": 77
+    },
+    {
+        "name": "Shawn Tate",
+        "subject": "English",
+        "marks": 72
+    },
+    {
+        "name": "Shivam",
+        "subject": "Physics",
+        "marks": 78
+    },
+    {
+        "name": "Mitchelle",
+        "subject": "Maths",
+        "marks": 78
+    },
+    {
+        "name": "Shiv Yadav",
+        "subject": "Chemistry",
+        "marks": 80
+    },
+    {
+        "name": "Shiv Yadav",
+        "subject": "Hindi",
+        "marks": 76
+    },
+    {
+        "name": "Shiv Yadav",
+        "subject": "Physics",
+        "marks": 77
+    }
+]
