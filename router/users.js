@@ -60,4 +60,56 @@ router.post('/register', async (req, res) => {
     });
     
   });
+
+  router.get('/:username/email',  async (req, res) => {
+    const username = req.params.username
+    const query = 'select id FROM users_tailwebs WHERE username = ?';
+   
+    connection.query(query, [username], (err, result) => {
+        if (err) {
+          console.error('Error :', err);
+          res.send('Error executing query');
+          return;
+        }
+       
+        res.send(result);
+      });
+  });
+
+
+  router.delete('/delete/:id',(req,res,next)=>{
+    const id = req.params.id;
+    const query = "delete from users_tailwebs where id =?";
+    connection.query(query,[id],(err,result)=>{
+        if(!err){
+            if(result.affectedRows == 0){
+                return res.status(404).json({message:"User id not found"});
+            }
+            return res.status(200).json({message:"User Deleted Successfully"});
+
+        }
+        else{
+            return res.status(500).json(err);
+        }
+    })
+});
+
+router.patch('/update/:id',(req,res,next)=>{
+  const id = req.params.id;
+  let user = req.body;
+  var query = "update mark set mark = ? where user_id=?" ;
+  connection.query(query,[user.mark,id],(err,result)=>{
+      if(!err){
+          if(result.affectedRows == 0){
+              return res.status(404).json({message:"User not found"});
+          }
+          return res.status(200).json({message:"Update Successfully"});
+      }
+      else{
+          return res.status(500).json(err);
+      }
+  });
+});
+
+
   module.exports = router;

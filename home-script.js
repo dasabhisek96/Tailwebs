@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const studentList = document.getElementById("student-list");
 
@@ -88,6 +90,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function addSubject(text,value) {
+        const select = document.getElementById("student-subject");
+        select.options[select.options.length] = new Option(text,value);
+
+    }
+
     // Function to close dropdown when edit or delete is clicked
     function closeDropdown(row) {
         row.querySelector(".dropdown-content").classList.remove("show");
@@ -101,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-     fetch('http://localhost:3002/mark/student', {
+     fetch('http://localhost:3002/mark/students', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -111,8 +119,9 @@ document.addEventListener("DOMContentLoaded", function () {
     })
         .then((response) => response.json())
         .then((data) => {
+            console.log(data)
             data.forEach((student) => {
-                addStudent(student.name, student.subject, student.marks);
+                addStudent(student.name, student.Subject, student.Mark);
             });
         })
         .catch((error) => {
@@ -121,8 +130,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Add event listener for adding new student button
     document.getElementById("add-student-btn").addEventListener("click", function () {
-        openAddModal();
+        fetch('http://localhost:3002/mark/subject', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+            
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                data.forEach((item)=>{
+                    addSubject(item.Subject,item.id)
+                })
+                openAddModal();
+                
+            })
+            .catch((error) => {
+                console.error("Error loading subjects:", error);
+            });
+    
+        
     });
+
+    document.getElementById('student-name').onfocusout = getStudentName();
+
+    function getStudentName() {
+        console.log('hereee')
+        console.log(document.getElementById('student-name').value)
+    }
 
     // Close modal when clicking on close button
     document.getElementsByClassName("close-btn")[0].addEventListener("click", function () {
@@ -134,13 +171,38 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         const name = document.getElementById("student-name").value;
         const subject = document.getElementById("student-subject").value;
-        const marks = document.getElementById("student-marks").value;
+        const Mark = document.getElementById("student-marks").value;
 
+        fetch('http://localhost:3002/users/'+name+'/email', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+            
+        }).then((response)=> response.json())
+        .then((result)=>{
+            console.log(result)
+            const userId = result[0].id;
+            fetch('http://localhost:3002/mark/add', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id:userId, subject_id:subject,Mark })
+                
+            }).then((response)=> response.json())
+            .then((marks)=>{
+                addStudent(name, subject, marks);
+                document.getElementById("student-modal").style.display = "none";
+            })
+        })
         // Add new student to the table
-        addStudent(name, subject, marks);
+        
 
         // Close modal after adding new student
-        document.getElementById("student-modal").style.display = "none";
+       
     });
 
     // Add event listener for Logout button

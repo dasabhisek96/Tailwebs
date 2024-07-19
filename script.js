@@ -40,10 +40,10 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                document.getElementById('response').textContent = 'Login successful!';
+            if (data) {
+                
                 localStorage.setItem('token', data.token);
-                window.location.href = 'student.html';
+                window.location.href = './home.html';
             } else {
                 document.getElementById('response').textContent = 'Login failed: ' + data.message;
             }
